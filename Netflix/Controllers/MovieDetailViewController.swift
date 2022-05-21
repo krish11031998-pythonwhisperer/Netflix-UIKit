@@ -380,7 +380,9 @@ class MovieDetailViewController: UIViewController {
             self.updateMovieMetricView()
             
             //Update Movie Genre
-            self.genreStack.reloadInputViews()
+            for label in self.genreLabels{
+                self.genreStack.addArrangedSubview(label)
+            }
             
             //Reload
             self.producerSection.reloadData()

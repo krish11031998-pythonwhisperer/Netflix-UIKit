@@ -67,6 +67,7 @@ class MovieDetailViewController: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             label.font = .systemFont(ofSize: 11, weight: .medium)
             label.textColor = .white
+            label.textAlignment = .center
             label.text = genre.name ?? "GenreNameX"
             genreLabels.append(label)
         }
@@ -286,9 +287,8 @@ class MovieDetailViewController: UIViewController {
         self.producerSection.dataSource = self
         self.scrollView.addSubview(self.producerSection)
         
-        
-        
-        // Do any additional setup after loading the view.
+        self.scrollView.addSubview(self.genreStack)
+    
     }
     
     override func viewDidLayoutSubviews() {
@@ -345,19 +345,16 @@ class MovieDetailViewController: UIViewController {
         self.producerSection.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         //genreStack
-        NSLayoutConstraint.activate([
-            self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10),
-            self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})),
-            self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.height}).reduce(0, {$0 + $1})),
-            self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 0)
-        ])
+        self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10).isActive = true
+        self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})).isActive = true
+        self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.first?.intrinsicContentSize.height ?? 100).isActive = true
+        self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 10).isActive = true
     }
     
     private func fetchMovieDetail(_ movie_id:String){
         TMDBAPI.shared.fetchMovieDetail(movie_id: movie_id) { [weak self] result in
             switch result{
             case .success(let movieDetail):
-                print("(DEBUG) movieDetail : ",movieDetail)
                 self?.movieDetail = movieDetail
                 self?.updateUIWithMovieDetail()
             case .failure(let err):

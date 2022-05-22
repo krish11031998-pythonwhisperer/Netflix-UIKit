@@ -12,6 +12,12 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
     
     static var identifier:String = "CastCell"
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.imageView.image = .init(named: "placeHolder")
+    }
+    
     private lazy var imageView:UIImageView = {
        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -63,7 +69,7 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.layer.borderColor = UIColor.black.cgColor
+        self.layer.borderColor = UIColor.gray.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 10
         self.addSubview(self.imageView)

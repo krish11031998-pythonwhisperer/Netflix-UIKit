@@ -109,6 +109,10 @@ class MovieDetailViewController: UIViewController {
     
     // MARK: - MovieMetric
     
+    private lazy var metricHeader:UILabel = {
+        return self.sectionHeaderBuilder(title: "Metrics")
+    }()
+    
     private let metricStack:UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -246,7 +250,21 @@ class MovieDetailViewController: UIViewController {
     }()
     
     
+    private lazy var producersTitle:UILabel = {
+        return self.sectionHeaderBuilder(title: "Producer")
+    }()
     
+    // MARK: - CastSection
+    
+    private lazy var castSectionTitle:UILabel = {
+        return self.sectionHeaderBuilder(title: "Cast")
+    }()
+    
+    private lazy var castCollection:MovieCastCollectionView = {
+        let collectionView = MovieCastCollectionView()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
     
     // MARK: - viewDidLoadSection
     override func viewDidLoad() {
@@ -280,14 +298,20 @@ class MovieDetailViewController: UIViewController {
         self.metricStack.addArrangedSubview(self.popularityMetric)
         
         //MetricStack
+        self.scrollView.addSubview(self.metricHeader)
         self.scrollView.addSubview(self.metricStack)
         
         //Producer
+        self.scrollView.addSubview(self.producersTitle)
+        
         self.producerSection.delegate = self
         self.producerSection.dataSource = self
         self.scrollView.addSubview(self.producerSection)
         
-        self.scrollView.addSubview(self.genreStack)
+        
+        //Cast
+        self.scrollView.addSubview(self.castSectionTitle)
+        self.scrollView.addSubview(self.castCollection)
     
     }
     
@@ -334,21 +358,44 @@ class MovieDetailViewController: UIViewController {
         
         
         //MetricStack
+        self.metricHeader.topAnchor.constraint(equalTo: self.movieInfo.bottomAnchor,constant: 20).isActive = true
+        self.metricHeader.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.metricHeader.widthAnchor.constraint(equalToConstant: self.metricHeader.intrinsicContentSize.width + 5).isActive = true
+        self.metricHeader.heightAnchor.constraint(equalToConstant: self.metricHeader.intrinsicContentSize.height).isActive = true
+        
+        self.metricStack.topAnchor.constraint(equalTo: self.metricHeader.bottomAnchor,constant: 10).isActive = true
         self.metricStack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor,constant: 10).isActive = true
         self.metricStack.trailingAnchor.constraint(equalTo: self.view.trailingAnchor,constant: -10).isActive = true
-        self.metricStack.topAnchor.constraint(equalTo: self.movieInfo.bottomAnchor,constant: 15).isActive = true
+        self.metricStack.topAnchor.constraint(equalTo: self.metricHeader.bottomAnchor,constant: 15).isActive = true
         
         //ProducerCollection
-        self.producerSection.topAnchor.constraint(equalTo: self.metricStack.bottomAnchor,constant: 10).isActive = true
+        self.producersTitle.topAnchor.constraint(equalTo: self.metricStack.bottomAnchor,constant: 20).isActive = true
+        self.producersTitle.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.producersTitle.widthAnchor.constraint(equalToConstant: self.producersTitle.intrinsicContentSize.width + 5).isActive = true
+        self.producersTitle.heightAnchor.constraint(equalToConstant: self.producersTitle.intrinsicContentSize.height).isActive = true
+        
+        self.producerSection.topAnchor.constraint(equalTo: self.producersTitle.bottomAnchor,constant: 10).isActive = true
         self.producerSection.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10).isActive = true
         self.producerSection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
-        self.producerSection.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        self.producerSection.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
         //genreStack
-        self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10).isActive = true
-        self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})).isActive = true
-        self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.first?.intrinsicContentSize.height ?? 100).isActive = true
-        self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 10).isActive = true
+//        self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10).isActive = true
+//        self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})).isActive = true
+//        self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.first?.intrinsicContentSize.height ?? 100).isActive = true
+//        self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 10).isActive = true
+        
+        //castCollection
+        self.castSectionTitle.topAnchor.constraint(equalTo: self.producerSection.bottomAnchor,constant: 20).isActive = true
+        self.castSectionTitle.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.castSectionTitle.widthAnchor.constraint(equalToConstant: self.castSectionTitle.intrinsicContentSize.width + 5).isActive = true
+        self.castSectionTitle.heightAnchor.constraint(equalToConstant: self.castSectionTitle.intrinsicContentSize.height).isActive = true
+        
+    
+        self.castCollection.topAnchor.constraint(equalTo: self.castSectionTitle.bottomAnchor,constant: 10).isActive = true
+        self.castCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.castCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
+        self.castCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.5).isActive = true
     }
     
     private func fetchMovieDetail(_ movie_id:String){
@@ -357,8 +404,22 @@ class MovieDetailViewController: UIViewController {
             case .success(let movieDetail):
                 self?.movieDetail = movieDetail
                 self?.updateUIWithMovieDetail()
+                self?.fetchMovieCast(movie_id: movie_id)
             case .failure(let err):
                 print("(Err) err : ",err.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchMovieCast(movie_id:String){
+        TMDBAPI.shared.fetchMovieCasts(movie_id: movie_id) { [weak self] result in
+            switch result{
+            case .success(let cast):
+                if let actors = cast.cast{
+                    self?.castCollection.updateCollectionWithMovieCastCrew(actors)
+                }
+            case .failure(let err):
+                print("(Error) err : ",err.localizedDescription)
             }
         }
     }
@@ -383,17 +444,32 @@ class MovieDetailViewController: UIViewController {
             for label in self.genreLabels{
                 self.genreStack.addArrangedSubview(label)
             }
+            self.scrollView.addSubview(self.genreStack)
+            self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10).isActive = true
+            self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})).isActive = true
+            self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.first?.intrinsicContentSize.height ?? 100).isActive = true
+            self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 10).isActive = true
             
             //Reload
             self.producerSection.reloadData()
         }
     }
     
+    
     public func updateView(_ movie:MovieData){
 
         if let id = movie.id{
             self.fetchMovieDetail("\(id)")
         }
+    }
+    
+    private func sectionHeaderBuilder(title:String,size:CGFloat = 22.5) -> UILabel{
+        let label = UILabel()
+        label.textColor = .white
+        label.font = .systemFont(ofSize: size, weight: .semibold)
+        label.text = title
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }
 
 }

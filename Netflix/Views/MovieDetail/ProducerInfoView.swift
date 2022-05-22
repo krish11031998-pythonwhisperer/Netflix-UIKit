@@ -15,7 +15,7 @@ class ProducerInfoView: UICollectionViewCell {
     private let producerLabel:UILabel = {
         let producerLabel = UILabel()
         producerLabel.font = .systemFont(ofSize: 13, weight: .medium)
-        producerLabel.textColor = .white
+        producerLabel.textColor = .black
         producerLabel.numberOfLines = 1
         producerLabel.translatesAutoresizingMaskIntoConstraints = false
         return producerLabel
@@ -43,8 +43,7 @@ class ProducerInfoView: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print("(DEBUG) self.frame : ",frame)
-        self.backgroundColor = .red
+        self.backgroundColor = .white
         self.layer.cornerRadius = 10
         self.layer.borderWidth = 0.75
         self.layer.borderColor = UIColor.white.cgColor

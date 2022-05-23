@@ -157,6 +157,7 @@ class TMDBAPI:DataParser{
     
     
     // MARK: - Fetch Movie Detail
+    
     func fetchMovieDetail(movie_id:String,completion:@escaping ((Result<MovieDetail,DataError>) -> Void)){
         let urlPath = TMDBEndpoints.movieDetail.rawValue.replacingOccurrences(of: "movie_id", with: movie_id)
         guard let url = self.URLBuilder(endpoint: urlPath) else {
@@ -182,6 +183,7 @@ class TMDBAPI:DataParser{
     }
     
     // MARK: - Fetch Movie Cast
+    
     func fetchMovieCasts(movie_id:String,completion:@escaping ((Result<CastModel,DataError>) -> Void)){
         let urlPath = TMDBEndpoints.movieCast.rawValue.replacingOccurrences(of: "movie_id", with: movie_id)
         guard let url = self.URLBuilder(endpoint: urlPath) else {
@@ -195,6 +197,26 @@ class TMDBAPI:DataParser{
                 CastModel.parseCastModelFromData(data: data,completion: completion)
             case .failure(let err):
                 print("(Error) err : ",err.localizedDescription)
+            }
+        }
+    }
+    
+    
+    // MARK: - Fetch Movie Videos
+    
+    func fetchMovieVideos(movie_id:String,completion:@escaping ((Result<[MovieVideoModel],DataError>) -> Void)){
+        let urlPath = TMDBEndpoints.movieVideos.rawValue.replacingOccurrences(of: "movie_id", with: movie_id)
+        guard let url = self.URLBuilder(endpoint: urlPath) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
+        self.dataFetchExecutor(url: url) { result in
+            switch result{
+            case .success(let data):
+                MovieVideoResponse.parseMovieVideoFromData(data: data, completion: completion)
+            case .failure(let err):
+                print("(Error) Err : ",err.localizedDescription)
             }
         }
     }

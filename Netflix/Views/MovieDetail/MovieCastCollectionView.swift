@@ -13,17 +13,19 @@ class MovieCastCollectionView: UIView {
     
     private lazy var collectionView:UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = .init(width: (UIScreen.main.bounds.width - 20) * 0.3, height: UIScreen.main.bounds.height * 0.2)
-        layout.scrollDirection = .vertical
+        layout.itemSize = .init(width: (UIScreen.main.bounds.width - 20) * 0.3, height: UIScreen.main.bounds.height * 0.15)
+        layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = .init(top: 5, left: 5, bottom: 5, right: 5)
+        layout.sectionInset = .init(top: 10, left: 10, bottom: 10, right: 10)
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.register(MovieCastCellCollectionViewCell.self, forCellWithReuseIdentifier: MovieCastCellCollectionViewCell.identifier)
-        collection.showsVerticalScrollIndicator = false
+        collection.showsHorizontalScrollIndicator = false
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.backgroundColor = .clear
         collection.layer.cornerRadius = 10
         collection.backgroundView = self.blurView
+        collection.layer.borderWidth = 1
+        collection.layer.borderColor = UIColor.gray.cgColor
         return collection
     }()
     
@@ -37,10 +39,7 @@ class MovieCastCollectionView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-//        self.backgroundColor = UIColor.green
         self.translatesAutoresizingMaskIntoConstraints = false
-//        self.addSubview(self.blurView)
         self.addSubview(self.collectionView)
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -54,7 +53,7 @@ class MovieCastCollectionView: UIView {
         super.layoutSubviews()
         print("(DEBUG) bounds : ",self.bounds)
         self.blurView.frame = self.bounds
-        self.setupLayout()
+        self.collectionView.frame = self.bounds
     }
     
     public func updateCollectionWithMovieCastCrew( _ movieCastCrew:[Crew]){
@@ -63,14 +62,6 @@ class MovieCastCollectionView: UIView {
             self.collectionView.reloadData()
         }
     }
-    
-    func setupLayout(){
-        self.collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-        self.collectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        self.collectionView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-        self.collectionView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-    }
-    
 }
 
 

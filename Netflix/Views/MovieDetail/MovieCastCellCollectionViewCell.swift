@@ -25,7 +25,6 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
         imageView.image = .init(named: "placeHolder")
         imageView.layer.cornerRadius = 10
         imageView.layer.addSublayer(self.gradient)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -33,7 +32,8 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "Actor"
         label.textColor = .white
-        label.font = .systemFont(ofSize: 15, weight: .semibold)
+        label.font = .systemFont(ofSize: 12.5, weight: .semibold)
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -42,7 +42,8 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "as Role"
         label.textColor = .white
-        label.font = .systemFont(ofSize: 12, weight: .regular)
+        label.font = .systemFont(ofSize: 10, weight: .regular)
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -105,7 +106,7 @@ class MovieCastCellCollectionViewCell: UICollectionViewCell {
                 self.actorLabel.text = actorLabel
             }
             
-            if let role = actor.character{
+            if let role = actor.character ?? actor.known_for_department{
                 self.roleLabel.text = "as \(role)"
             }
             

@@ -12,6 +12,16 @@ class MoviePreviewCard: UITableViewCell {
     
     static var identifier = "MoviewPreviewCard"
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.titleView.text = ""
+        self.yearView.text = ""
+        self.overviewView.text = ""
+        self.movieImage.image = .init(named: "placeHolder")
+        self.movieBackDropImage.image = .init(named: "placeHolder")
+    }
+    
     private var titleView:UILabel = {
         let textView = UILabel()
         textView.text = "Title"

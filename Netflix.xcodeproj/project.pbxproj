@@ -35,6 +35,10 @@
 		EF76C6A328393DB800FC3151 /* TrailerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF76C6A228393DB800FC3151 /* TrailerModel.swift */; };
 		EF8B0611283973DB0050E726 /* MovieCastCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B0610283973DB0050E726 /* MovieCastCollectionView.swift */; };
 		EF8B0613283974470050E726 /* MovieCastCellCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B0612283974470050E726 /* MovieCastCellCollectionViewCell.swift */; };
+		EF8B0615283A49E50050E726 /* MovieVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B0614283A49E50050E726 /* MovieVideoView.swift */; };
+		EF8B0617283A4DB00050E726 /* MovieVideoCellCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B0616283A4DB00050E726 /* MovieVideoCellCollectionViewCell.swift */; };
+		EF8B061A283A4E450050E726 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8B0619283A4E450050E726 /* UIViewExtension.swift */; };
+		EF8B061D283AC8270050E726 /* YouTubeiOSPlayerHelper in Frameworks */ = {isa = PBXBuildFile; productRef = EF8B061C283AC8270050E726 /* YouTubeiOSPlayerHelper */; };
 		EFA06AF92832506A00C5FF9D /* HeroHeaderVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA06AF82832506A00C5FF9D /* HeroHeaderVIew.swift */; };
 		EFA06AFB2832BAD200C5FF9D /* MovieCardCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA06AFA2832BAD200C5FF9D /* MovieCardCellView.swift */; };
 		EFA06AFD28337DD100C5FF9D /* TMDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA06AFC28337DD100C5FF9D /* TMDB.swift */; };
@@ -94,6 +98,9 @@
 		EF76C6A228393DB800FC3151 /* TrailerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailerModel.swift; sourceTree = "<group>"; };
 		EF8B0610283973DB0050E726 /* MovieCastCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCastCollectionView.swift; sourceTree = "<group>"; };
 		EF8B0612283974470050E726 /* MovieCastCellCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCastCellCollectionViewCell.swift; sourceTree = "<group>"; };
+		EF8B0614283A49E50050E726 /* MovieVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieVideoView.swift; sourceTree = "<group>"; };
+		EF8B0616283A4DB00050E726 /* MovieVideoCellCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieVideoCellCollectionViewCell.swift; sourceTree = "<group>"; };
+		EF8B0619283A4E450050E726 /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		EFA06AF82832506A00C5FF9D /* HeroHeaderVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroHeaderVIew.swift; sourceTree = "<group>"; };
 		EFA06AFA2832BAD200C5FF9D /* MovieCardCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCardCellView.swift; sourceTree = "<group>"; };
 		EFA06AFC28337DD100C5FF9D /* TMDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TMDB.swift; sourceTree = "<group>"; };
@@ -108,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF8B061D283AC8270050E726 /* YouTubeiOSPlayerHelper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +221,7 @@
 		EF6ACE7028291C7300787DD7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EF8B0618283A4E320050E726 /* Extensions */,
 				EF8B060F283973B50050E726 /* MovieDetail */,
 				EF6ACE7228291CDA00787DD7 /* CollectionTableViewCell.swift */,
 				EFA06AF82832506A00C5FF9D /* HeroHeaderVIew.swift */,
@@ -240,8 +249,18 @@
 				EF76C69C2837AAAF00FC3151 /* ProducerInfoView.swift */,
 				EF8B0610283973DB0050E726 /* MovieCastCollectionView.swift */,
 				EF8B0612283974470050E726 /* MovieCastCellCollectionViewCell.swift */,
+				EF8B0614283A49E50050E726 /* MovieVideoView.swift */,
+				EF8B0616283A4DB00050E726 /* MovieVideoCellCollectionViewCell.swift */,
 			);
 			path = MovieDetail;
+			sourceTree = "<group>";
+		};
+		EF8B0618283A4E320050E726 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				EF8B0619283A4E450050E726 /* UIViewExtension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		EFA06B02283399A900C5FF9D /* Network */ = {
@@ -269,6 +288,9 @@
 			dependencies = (
 			);
 			name = Netflix;
+			packageProductDependencies = (
+				EF8B061C283AC8270050E726 /* YouTubeiOSPlayerHelper */,
+			);
 			productName = Netflix;
 			productReference = EF2E8E5B28291157000A3A9A /* Netflix.app */;
 			productType = "com.apple.product-type.application";
@@ -341,6 +363,9 @@
 				Base,
 			);
 			mainGroup = EF2E8E5228291157000A3A9A;
+			packageReferences = (
+				EF8B061B283AC8270050E726 /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */,
+			);
 			productRefGroup = EF2E8E5C28291157000A3A9A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -407,12 +432,15 @@
 				EFA06B0828342BA300C5FF9D /* MoviePreviewCard.swift in Sources */,
 				EF76C69D2837AAAF00FC3151 /* ProducerInfoView.swift in Sources */,
 				EF76C69F2839343000FC3151 /* IMDBAPI.swift in Sources */,
+				EF8B061A283A4E450050E726 /* UIViewExtension.swift in Sources */,
 				EF76C69728363ED400FC3151 /* SearchResultMovieView.swift in Sources */,
 				EF8B0611283973DB0050E726 /* MovieCastCollectionView.swift in Sources */,
 				EF76C68D2835243B00FC3151 /* MovieCellSnapshot.swift in Sources */,
 				EF76C69528362AA400FC3151 /* SearchKeywordResultCollectionCell.swift in Sources */,
 				EF2E8E9028291293000A3A9A /* HomeViewController.swift in Sources */,
+				EF8B0615283A49E50050E726 /* MovieVideoView.swift in Sources */,
 				EFA06AF92832506A00C5FF9D /* HeroHeaderVIew.swift in Sources */,
+				EF8B0617283A4DB00050E726 /* MovieVideoCellCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -740,6 +768,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EF8B061B283AC8270050E726 /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/youtube/youtube-ios-player-helper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EF8B061C283AC8270050E726 /* YouTubeiOSPlayerHelper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF8B061B283AC8270050E726 /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */;
+			productName = YouTubeiOSPlayerHelper;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EF2E8E5328291157000A3A9A /* Project object */;
 }

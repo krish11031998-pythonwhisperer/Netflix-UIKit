@@ -8,7 +8,6 @@
 import UIKit
 
 class MovieDetailViewController: UIViewController {
-
     public var movie:MovieData? = nil
     private var movieDetail:MovieDetail? = nil
     
@@ -154,7 +153,7 @@ class MovieDetailViewController: UIViewController {
     }
     
     // MARK: - CloseButton
-    private let closeButton:UIButton = {
+    private lazy var closeButton:UIButton = {
         let button = UIButton()
         if let img = UIImage(systemName: "xmark",withConfiguration: UIImage.SymbolConfiguration(pointSize: 15)){
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -169,6 +168,7 @@ class MovieDetailViewController: UIViewController {
         button.tintColor = .white
         button.layer.borderColor = UIColor.white.cgColor
         button.layer.borderWidth = 0.35
+        button.addTarget(self, action: #selector(self.handleClose), for: .touchUpOutside)
         
         return button
         
@@ -266,6 +266,26 @@ class MovieDetailViewController: UIViewController {
         return collectionView
     }()
     
+    
+    // MARK: - CrewSection
+    
+    private lazy var crewSectionTitle:UILabel = {
+        return self.sectionHeaderBuilder(title: "Crew")
+    }()
+    
+    private lazy var crewCollection:MovieCastCollectionView = {
+        let collectionView = MovieCastCollectionView()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
+    
+    // MARK: - VideoSection
+    
+    private lazy var videoTitle:UILabel = self.view.labelBuilder(text: "Video", size: 20 , weight: .semibold, color: .white, numOfLines: 1)
+    
+    private lazy var videoCollection:MovieVideoView = MovieVideoView()
+    
     // MARK: - viewDidLoadSection
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -276,7 +296,6 @@ class MovieDetailViewController: UIViewController {
         self.view.addSubview(self.scrollView)
         
         //Close Button
-        self.closeButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleClose)))
         self.backdropPosterView.addSubview(self.closeButton)
         
         //TitleView
@@ -312,13 +331,23 @@ class MovieDetailViewController: UIViewController {
         //Cast
         self.scrollView.addSubview(self.castSectionTitle)
         self.scrollView.addSubview(self.castCollection)
+        
+        
+        //Crew
+        self.scrollView.addSubview(self.crewSectionTitle)
+        self.scrollView.addSubview(self.crewCollection)
+        
+        
+        //Videos
+        self.scrollView.addSubview(self.videoTitle)
+        self.scrollView.addSubview(self.videoCollection)
     
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.scrollView.frame = self.view.bounds
-        self.scrollView.contentSize = .init(width: self.view.bounds.width, height: self.view.bounds.height * 2)
+        self.scrollView.contentSize = .init(width: self.view.bounds.width, height: self.view.bounds.height * 3)
         self.setupLayout()
     }
     
@@ -396,6 +425,30 @@ class MovieDetailViewController: UIViewController {
         self.castCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
         self.castCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
         self.castCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.5).isActive = true
+        
+    
+        //crewCollection
+        self.crewSectionTitle.topAnchor.constraint(equalTo: self.castCollection.bottomAnchor,constant: 20).isActive = true
+        self.crewSectionTitle.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.crewSectionTitle.widthAnchor.constraint(equalToConstant: self.crewSectionTitle.intrinsicContentSize.width + 5).isActive = true
+        self.crewSectionTitle.heightAnchor.constraint(equalToConstant: self.crewSectionTitle.intrinsicContentSize.height).isActive = true
+        
+    
+        self.crewCollection.topAnchor.constraint(equalTo: self.crewSectionTitle.bottomAnchor,constant: 10).isActive = true
+        self.crewCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.crewCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
+        self.crewCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.3).isActive = true
+        
+        // videoCollection
+        self.videoTitle.topAnchor.constraint(equalTo: self.crewCollection.bottomAnchor,constant: 20).isActive = true
+        self.videoTitle.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.videoTitle.widthAnchor.constraint(equalToConstant: self.videoTitle.intrinsicContentSize.width + 5).isActive = true
+        self.videoTitle.heightAnchor.constraint(equalToConstant: self.videoTitle.intrinsicContentSize.height).isActive = true
+        
+        self.videoCollection.topAnchor.constraint(equalTo: self.videoTitle.bottomAnchor,constant: 10).isActive = true
+        self.videoCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.videoCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
+        self.videoCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.275).isActive = true
     }
     
     private func fetchMovieDetail(_ movie_id:String){
@@ -405,6 +458,7 @@ class MovieDetailViewController: UIViewController {
                 self?.movieDetail = movieDetail
                 self?.updateUIWithMovieDetail()
                 self?.fetchMovieCast(movie_id: movie_id)
+                self?.fetchVideo(movie_id: movie_id)
             case .failure(let err):
                 print("(Err) err : ",err.localizedDescription)
             }
@@ -418,6 +472,22 @@ class MovieDetailViewController: UIViewController {
                 if let actors = cast.cast{
                     self?.castCollection.updateCollectionWithMovieCastCrew(actors)
                 }
+                
+                if let crew = cast.crew{
+                    self?.crewCollection.updateCollectionWithMovieCastCrew(crew)
+                }
+            case .failure(let err):
+                print("(Error) err : ",err.localizedDescription)
+            }
+        }
+    }
+    
+    
+    func fetchVideo(movie_id:String){
+        TMDBAPI.shared.fetchMovieVideos(movie_id: movie_id) { [weak self] result in
+            switch result{
+            case .success(let movies):
+                self?.videoCollection.updateVideosCollection(movies)
             case .failure(let err):
                 print("(Error) err : ",err.localizedDescription)
             }

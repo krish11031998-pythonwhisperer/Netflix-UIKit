@@ -221,6 +221,25 @@ class TMDBAPI:DataParser{
         }
     }
     
+    // MARK: - Fetch Movie Reviews
+    
+    func fetchMovieReviews(movie_id:String,completion:@escaping ((Result<[MovieReviewModel],DataError>) -> Void)){
+        let urlPath = TMDBEndpoints.movieReviews.rawValue.replacingOccurrences(of: "movie_id", with: movie_id)
+        guard let url = self.URLBuilder(endpoint: urlPath) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
+        self.dataFetchExecutor(url: url) { result in
+            switch result{
+            case .success(let data):
+                MovieReviewResponse.parseMovieReviewsFromData(data: data, completion: completion)
+            case .failure(let err):
+                print("(Error) Err : ",err.localizedDescription)
+            }
+        }
+    }
+    
     func loadImage(posterPath:String,completion:@escaping ((Result<UIImage,ImageDownloaderError>) -> Void)){
         ImageDownloader.shared.fetchImage(urlStr: "https://image.tmdb.org/t/p/w500\(posterPath)",completion: completion) 
     }

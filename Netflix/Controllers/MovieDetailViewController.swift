@@ -10,6 +10,10 @@ import UIKit
 class MovieDetailViewController: UIViewController {
     public var movie:MovieData? = nil
     private var movieDetail:MovieDetail? = nil
+    private var movieCast:[Actor]? = nil
+    private var movieCrew:[Crew]? = nil
+    private var movieVideo:[MovieVideoModel]? = nil
+    private var movieReviews:[MovieReviewModel]? = nil
     
     public var handlePopController:(() -> Void)? = nil
     
@@ -286,6 +290,13 @@ class MovieDetailViewController: UIViewController {
     
     private lazy var videoCollection:MovieVideoView = MovieVideoView()
     
+    
+    // MARK: - ReviewSection
+    
+    private lazy var reviewTitle:UILabel = self.view.labelBuilder(text: "Review", size: 20 , weight: .semibold, color: .white, numOfLines: 1)
+    
+    private lazy var reviewCollection:MovieReviewCollectionView = MovieReviewCollectionView()
+    
     // MARK: - viewDidLoadSection
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -341,6 +352,10 @@ class MovieDetailViewController: UIViewController {
         //Videos
         self.scrollView.addSubview(self.videoTitle)
         self.scrollView.addSubview(self.videoCollection)
+        
+        //Reviews
+        self.scrollView.addSubview(self.reviewTitle)
+        self.scrollView.addSubview(self.reviewCollection)
     
     }
     
@@ -392,7 +407,7 @@ class MovieDetailViewController: UIViewController {
         self.metricHeader.widthAnchor.constraint(equalToConstant: self.metricHeader.intrinsicContentSize.width + 5).isActive = true
         self.metricHeader.heightAnchor.constraint(equalToConstant: self.metricHeader.intrinsicContentSize.height).isActive = true
         
-        self.metricStack.topAnchor.constraint(equalTo: self.metricHeader.bottomAnchor,constant: 10).isActive = true
+        self.metricStack.topAnchor.constraint(equalTo: self.metricHeader.bottomAnchor,constant: 20).isActive = true
         self.metricStack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor,constant: 10).isActive = true
         self.metricStack.trailingAnchor.constraint(equalTo: self.view.trailingAnchor,constant: -10).isActive = true
         self.metricStack.topAnchor.constraint(equalTo: self.metricHeader.bottomAnchor,constant: 15).isActive = true
@@ -403,16 +418,10 @@ class MovieDetailViewController: UIViewController {
         self.producersTitle.widthAnchor.constraint(equalToConstant: self.producersTitle.intrinsicContentSize.width + 5).isActive = true
         self.producersTitle.heightAnchor.constraint(equalToConstant: self.producersTitle.intrinsicContentSize.height).isActive = true
         
-        self.producerSection.topAnchor.constraint(equalTo: self.producersTitle.bottomAnchor,constant: 10).isActive = true
+        self.producerSection.topAnchor.constraint(equalTo: self.producersTitle.bottomAnchor,constant: 20).isActive = true
         self.producerSection.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10).isActive = true
         self.producerSection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
         self.producerSection.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        
-        //genreStack
-//        self.genreStack.leadingAnchor.constraint(equalTo:self.view.leadingAnchor,constant: 10).isActive = true
-//        self.genreStack.widthAnchor.constraint(equalToConstant: self.genreLabels.compactMap({$0.intrinsicContentSize.width + 10}).reduce(0, {$0 + $1})).isActive = true
-//        self.genreStack.heightAnchor.constraint(equalToConstant: self.genreLabels.first?.intrinsicContentSize.height ?? 100).isActive = true
-//        self.genreStack.topAnchor.constraint(equalTo: self.titleView.bottomAnchor,constant: 10).isActive = true
         
         //castCollection
         self.castSectionTitle.topAnchor.constraint(equalTo: self.producerSection.bottomAnchor,constant: 20).isActive = true
@@ -421,10 +430,10 @@ class MovieDetailViewController: UIViewController {
         self.castSectionTitle.heightAnchor.constraint(equalToConstant: self.castSectionTitle.intrinsicContentSize.height).isActive = true
         
     
-        self.castCollection.topAnchor.constraint(equalTo: self.castSectionTitle.bottomAnchor,constant: 10).isActive = true
+        self.castCollection.topAnchor.constraint(equalTo: self.castSectionTitle.bottomAnchor,constant: 20).isActive = true
         self.castCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
         self.castCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
-        self.castCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.5).isActive = true
+        self.castCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.4).isActive = true
         
     
         //crewCollection
@@ -434,10 +443,10 @@ class MovieDetailViewController: UIViewController {
         self.crewSectionTitle.heightAnchor.constraint(equalToConstant: self.crewSectionTitle.intrinsicContentSize.height).isActive = true
         
     
-        self.crewCollection.topAnchor.constraint(equalTo: self.crewSectionTitle.bottomAnchor,constant: 10).isActive = true
+        self.crewCollection.topAnchor.constraint(equalTo: self.crewSectionTitle.bottomAnchor,constant: 20).isActive = true
         self.crewCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
         self.crewCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
-        self.crewCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.3).isActive = true
+        self.crewCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.4).isActive = true
         
         // videoCollection
         self.videoTitle.topAnchor.constraint(equalTo: self.crewCollection.bottomAnchor,constant: 20).isActive = true
@@ -445,10 +454,22 @@ class MovieDetailViewController: UIViewController {
         self.videoTitle.widthAnchor.constraint(equalToConstant: self.videoTitle.intrinsicContentSize.width + 5).isActive = true
         self.videoTitle.heightAnchor.constraint(equalToConstant: self.videoTitle.intrinsicContentSize.height).isActive = true
         
-        self.videoCollection.topAnchor.constraint(equalTo: self.videoTitle.bottomAnchor,constant: 10).isActive = true
+        self.videoCollection.topAnchor.constraint(equalTo: self.videoTitle.bottomAnchor,constant: 20).isActive = true
         self.videoCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
         self.videoCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
-        self.videoCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.275).isActive = true
+        self.videoCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.3).isActive = true
+        
+    
+        // reviewCollection
+        self.reviewTitle.topAnchor.constraint(equalTo: self.videoCollection.bottomAnchor,constant: 20).isActive = true
+        self.reviewTitle.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.reviewTitle.widthAnchor.constraint(equalToConstant: self.reviewTitle.intrinsicContentSize.width + 5).isActive = true
+        self.reviewTitle.heightAnchor.constraint(equalToConstant: self.reviewTitle.intrinsicContentSize.height).isActive = true
+        
+        self.reviewCollection.topAnchor.constraint(equalTo: self.reviewTitle.bottomAnchor,constant: 20).isActive = true
+        self.reviewCollection.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor,constant: 10).isActive = true
+        self.reviewCollection.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 20).isActive = true
+        self.reviewCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.3).isActive = true
     }
     
     private func fetchMovieDetail(_ movie_id:String){
@@ -494,6 +515,17 @@ class MovieDetailViewController: UIViewController {
         }
     }
     
+    func fetchMovieReviews(movie_id:String){
+        TMDBAPI.shared.fetchMovieReviews(movie_id: movie_id) { [weak self] result in
+            switch result{
+            case .success(let reviews):
+                self?.reviewCollection.updateMovieReview(reviews)
+            case .failure(let err):
+                print("(Error) err : ",err.localizedDescription)
+            }
+        }
+    }
+    
     
     func updateUIWithMovieDetail(){
         DispatchQueue.main.async {
@@ -527,7 +559,16 @@ class MovieDetailViewController: UIViewController {
     
     
     public func updateView(_ movie:MovieData){
-
+        
+        let group = DispatchGroup()
+        
+        let dataFetchers:[(String) -> Void] = [self.fetchMovieDetail(_:),self.fetchVideo(movie_id:),self.fetchMovieCast(movie_id:),self.fetchMovieReviews(movie_id:)]
+        
+        for fetcher in dataFetchers{
+            group.enter()
+        }
+    
+        
         if let id = movie.id{
             self.fetchMovieDetail("\(id)")
         }

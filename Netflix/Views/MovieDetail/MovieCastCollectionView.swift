@@ -13,7 +13,7 @@ class MovieCastCollectionView: UIView {
     
     private lazy var collectionView:UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = .init(width: (UIScreen.main.bounds.width - 20) * 0.3, height: UIScreen.main.bounds.height * 0.15)
+        layout.itemSize = .init(width: (UIScreen.main.bounds.width - 20) * 0.3, height: UIScreen.main.bounds.height * 0.2 - 15)
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .init(top: 10, left: 10, bottom: 10, right: 10)

@@ -13,18 +13,20 @@ class MovieReviewCollectionView: UIView {
     
     private lazy var collectionView:UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = .init(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.4)
+        layout.itemSize = .init(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.25)
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 5
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.delegate = self
         collection.dataSource = self
+        collection.showsHorizontalScrollIndicator = false
         collection.register(MovieReviewCollectionViewCell.self, forCellWithReuseIdentifier: MovieReviewCollectionViewCell.identifier)
         return collection
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.collectionView)
     }
     
@@ -37,6 +39,7 @@ class MovieReviewCollectionView: UIView {
         super.layoutSubviews()
         self.collectionView.frame = self.bounds.inset(by: .init(top: 10, left: 10, bottom: 10, right: 10))
     }
+    
     
     func updateMovieReview(_ review:[MovieReviewModel]){
         self.reviews = review

@@ -17,11 +17,10 @@ class MovieReviewCollectionViewCell: UICollectionViewCell {
     
     private lazy var created_at:UILabel = self.labelBuilder(text: "", size: 10, weight: .semibold, color: .white, numOfLines: 1)
     
-    private lazy var comment:UILabel = self.labelBuilder(text: "", size: 13, weight: .regular, color: .white, numOfLines: .max)
+    private lazy var comment:UILabel = self.labelBuilder(text: "", size: 13, weight: .regular, color: .white, numOfLines: 3)
     
     private lazy var profileImage:UIImageView = {
         let imageView = self.imageView(autoLayout:false)
-        imageView.frame = .init(origin: .zero , size: .init(width:50,height:50))
         imageView.layer.cornerRadius = 25
         return imageView
     }()
@@ -32,19 +31,42 @@ class MovieReviewCollectionViewCell: UICollectionViewCell {
         profileDetails.axis = .vertical
         profileDetails.alignment = .leading
         profileDetails.distribution = .fillProportionally
-        
+        profileDetails.translatesAutoresizingMaskIntoConstraints = false
+    
         let profileDetailsWithImage = UIStackView(arrangedSubviews: [self.profileImage,profileDetails])
         profileDetailsWithImage.axis = .horizontal
         profileDetailsWithImage.alignment = .center
         profileDetailsWithImage.distribution = .fillProportionally
+        profileDetailsWithImage.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        NSLayoutConstraint.activate([
+            self.profileImage.leadingAnchor.constraint(equalTo: profileDetailsWithImage.leadingAnchor),
+            self.profileImage.widthAnchor.constraint(equalToConstant: 50),
+            self.profileImage.heightAnchor.constraint(equalToConstant: 50)
+            
+        ])
         
         return profileDetailsWithImage
     }()
     
     
+    private lazy var commentMainBody:UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [self.profileInfo,self.comment])
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.distribution = .fillProportionally
+        
+        return stack
+    }()
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(self.profileInfo)
+        self.layer.borderColor = UIColor.gray.cgColor
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 10
+        self.comment.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.comment)
     }
     
@@ -54,9 +76,6 @@ class MovieReviewCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.comment.frame = .init(origin: .zero, size: .init(width: self.bounds.width, height: self.bounds.height * 0.6)).inset(by: .init(top: 10, left: 10, bottom: 10, right: 10))
-        self.profileInfo.frame = .init(origin: .zero, size: .init(width: self.bounds.width, height: self.bounds.height * 0.4)).inset(by: .init(top: 10, left: 10, bottom: 10, right: 10))
-        
         self.setupLayout()
     }
     
@@ -97,10 +116,11 @@ class MovieReviewCollectionViewCell: UICollectionViewCell {
     func setupLayout(){
         
         NSLayoutConstraint.activate([
-            self.profileInfo.topAnchor.constraint(equalTo: self.topAnchor),
-            self.profileInfo.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.comment.topAnchor.constraint(equalTo: self.profileInfo.bottomAnchor),
-            self.comment.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+            self.comment.topAnchor.constraint(equalTo: self.topAnchor,constant: 10),
+            self.comment.bottomAnchor.constraint(equalTo: self.bottomAnchor,constant:  -10),
+            self.comment.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10),
+			self.comment.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10)
+            
         ])
         
     }

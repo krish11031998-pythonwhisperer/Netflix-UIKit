@@ -19,7 +19,7 @@ struct KeywordResponse:Codable{
     var total_results:Int?
     
     
-    static func parseKeywordFromResponse(result:Result<Data,Error>, completion:@escaping ((Result<[KeywordData],DataError>) -> Void)){
+    static func parseKeywordFromResponse(result:Result<Data,DataError>, completion:@escaping ((Result<[KeywordData],DataError>) -> Void)){
         switch result{
         case .success(let data):
             do{

@@ -362,7 +362,7 @@ class MovieDetailViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.scrollView.frame = self.view.bounds
-        self.scrollView.contentSize = .init(width: self.view.bounds.width, height: self.view.bounds.height * 3)
+        self.scrollView.contentSize = .init(width: self.view.bounds.width, height: self.view.bounds.height * 5)
         self.setupLayout()
     }
     
@@ -472,57 +472,69 @@ class MovieDetailViewController: UIViewController {
         self.reviewCollection.heightAnchor.constraint(equalToConstant: self.scrollView.bounds.height * 0.3).isActive = true
     }
     
-    private func fetchMovieDetail(_ movie_id:String){
+    private func fetchMovieDetail(_ movie_id:String,dispatchGroup group:DispatchGroup){
+        group.enter()
         TMDBAPI.shared.fetchMovieDetail(movie_id: movie_id) { [weak self] result in
             switch result{
             case .success(let movieDetail):
                 self?.movieDetail = movieDetail
-                self?.updateUIWithMovieDetail()
-                self?.fetchMovieCast(movie_id: movie_id)
-                self?.fetchVideo(movie_id: movie_id)
+//                self?.updateUIWithMovieDetail()
+//                self?.fetchMovieCast(movie_id: movie_id)
+//                self?.fetchVideo(movie_id: movie_id)
             case .failure(let err):
                 print("(Err) err : ",err.localizedDescription)
             }
+            group.leave()
         }
     }
     
-    func fetchMovieCast(movie_id:String){
+    func fetchMovieCast(movie_id:String,dispatchGroup group:DispatchGroup){
+        group.enter()
         TMDBAPI.shared.fetchMovieCasts(movie_id: movie_id) { [weak self] result in
             switch result{
             case .success(let cast):
                 if let actors = cast.cast{
-                    self?.castCollection.updateCollectionWithMovieCastCrew(actors)
+//                    self?.castCollection.updateCollectionWithMovieCastCrew(actors)
+                    self?.movieCast = actors
                 }
                 
                 if let crew = cast.crew{
-                    self?.crewCollection.updateCollectionWithMovieCastCrew(crew)
+//                    self?.crewCollection.updateCollectionWithMovieCastCrew(crew)
+                    self?.movieCrew = crew
                 }
             case .failure(let err):
                 print("(Error) err : ",err.localizedDescription)
             }
+            group.leave()
         }
     }
     
     
-    func fetchVideo(movie_id:String){
+    func fetchVideo(movie_id:String,dispatchGroup group:DispatchGroup){
+        group.enter()
         TMDBAPI.shared.fetchMovieVideos(movie_id: movie_id) { [weak self] result in
             switch result{
             case .success(let movies):
-                self?.videoCollection.updateVideosCollection(movies)
+//                self?.videoCollection.updateVideosCollection(movies)
+                self?.movieVideo = movies
             case .failure(let err):
                 print("(Error) err : ",err.localizedDescription)
             }
+            group.leave()
         }
     }
     
-    func fetchMovieReviews(movie_id:String){
+    func fetchMovieReviews(movie_id:String,dispatchGroup group:DispatchGroup){
+        group.enter()
         TMDBAPI.shared.fetchMovieReviews(movie_id: movie_id) { [weak self] result in
             switch result{
             case .success(let reviews):
-                self?.reviewCollection.updateMovieReview(reviews)
+//                self?.reviewCollection.updateMovieReview(reviews)
+                self?.movieReviews = reviews
             case .failure(let err):
                 print("(Error) err : ",err.localizedDescription)
             }
+            group.leave()
         }
     }
     
@@ -559,18 +571,37 @@ class MovieDetailViewController: UIViewController {
     
     
     public func updateView(_ movie:MovieData){
+        guard let id = movie.id else {return}
         
         let group = DispatchGroup()
         
-        let dataFetchers:[(String) -> Void] = [self.fetchMovieDetail(_:),self.fetchVideo(movie_id:),self.fetchMovieCast(movie_id:),self.fetchMovieReviews(movie_id:)]
+        let dataFetchers:[(String,DispatchGroup) -> Void] = [self.fetchMovieDetail(_:dispatchGroup:),self.fetchMovieCast(movie_id:dispatchGroup:),self.fetchMovieReviews(movie_id:dispatchGroup:),self.fetchVideo(movie_id:dispatchGroup:)]
         
         for fetcher in dataFetchers{
-            group.enter()
+            fetcher("\(id)", group)
         }
-    
         
-        if let id = movie.id{
-            self.fetchMovieDetail("\(id)")
+        
+        group.notify(queue: .main) { [weak self] in
+            if let _ = self?.movieDetail {
+                self?.updateUIWithMovieDetail()
+            }
+            
+            if let movieCast = self?.movieCast {
+                self?.castCollection.updateCollectionWithMovieCastCrew(movieCast)
+            }
+            
+            if let movieCrew = self?.movieCrew {
+                self?.crewCollection.updateCollectionWithMovieCastCrew(movieCrew)
+            }
+            
+            if let movieVideo = self?.movieVideo {
+                self?.videoCollection.updateVideosCollection(movieVideo)
+            }
+            
+            if let movieReviews = self?.movieReviews {
+                self?.reviewCollection.updateMovieReview(movieReviews)
+            }
         }
     }
     

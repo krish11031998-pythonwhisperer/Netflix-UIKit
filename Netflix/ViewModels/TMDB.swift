@@ -55,7 +55,7 @@ class TMDBAPI:DataParser{
         print("(DEBUG) Default Parser")
     }
     
-    func dataFetchExecutor(url:URL,completion:((Result<Data,Error>) -> Void)? = nil){
+    func dataFetchExecutor(url:URL,completion:((Result<Data,DataError>) -> Void)? = nil){
         if let cacheDataForURL = DataCache.shared[url]{
             print("(DEBUG) Loading From Cache : \(url)")
             if let safeCompletion = completion{
@@ -73,7 +73,7 @@ class TMDBAPI:DataParser{
                 guard let safeData = data else {
                     if let error = error {
                         print("(Error) There was an error : ",error.localizedDescription)
-                        completion?(.failure(error))
+                        completion?(.failure(.noData))
                     }
                     return
                 }
